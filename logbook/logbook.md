@@ -82,6 +82,24 @@ Discussion Topics
 Plan for Next Meeting 
 - Use the new method of results as a score metric to improve the model
 - Use the full dataset to train model and finalise presentable results
+
+Supervisor meeting 5
+Date 1st of Aug
+Attendees:
+-Andreas Theodosiou
+-Matthew Barrett
+
+Discussion Topics
+1. Incidence angle
+- How are you interpreting the incidence angle of the images taken from the satelite
+
+2. Normalisation
+- Incorporating cut offs in your normalisation
+
+Plan for next meeting 
+- Implement what we discussed
+- Begin writing thesis 
+
   
 
 
