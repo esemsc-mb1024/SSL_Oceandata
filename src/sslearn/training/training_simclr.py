@@ -8,10 +8,17 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from ssl.datasets import in_memory_contrastive_dataset
-from ssl.models.simclr import simclr, simple_cnn
-from ssl.transforms.transforms import contrastive_transforms
-from ssl.losses import nt_xent_loss
+# dataset (from preprocessing, but re-exported by shim)
+from sslearn.datasets import InMemoryContrastiveDataset
+
+# models
+from sslearn.models.sim_arc import SimCLR, SimpleCNN
+
+# transforms (via shim → transforms/transforms.py)
+from sslearn.transformations import ContrastiveTransforms
+
+# loss (lives in loss_fn.py)
+from sslearn.loss_fn import NTXentLoss
 
 # ---------- configuration ----------
 epochs = 50
