@@ -14,7 +14,7 @@ model.eval()
 
 # Load dataset
 dataset = TiffDataset("data/TIFF_processed_1/GeoTIFF/")
-dataloader = DataLoader(dataset, batch_size=32, shuffle=False)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
 # Feature extraction
 features, labels = extract_features(model, dataloader, device)

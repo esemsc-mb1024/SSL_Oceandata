@@ -16,7 +16,7 @@ class TiffDataset(Dataset):
             if os.path.isdir(label_path):
                 self.label_map[label_name] = idx
                 for fname in os.listdir(label_path):
-                    if fname.lower().endswith(('.tiff', '.tif')):
+                    if fname.endswith('.tiff') or fname.endswith('.tif'):
                         self.samples.append(os.path.join(label_path, fname))
                         self.labels.append(idx)
 
@@ -27,12 +27,19 @@ class TiffDataset(Dataset):
         path = self.samples[idx]
         label = self.labels[idx]
 
+        # Load and normalize image
         with Image.open(path) as img:
             arr = np.array(img).astype(np.float32)
+
+            # Normalize image to [0, 1] if it's not already
             arr = (arr - arr.min()) / (arr.max() - arr.min() + 1e-8)
+
+            # Add channel dimension [1, H, W]
             arr = np.expand_dims(arr, axis=0)
+
             tensor_img = torch.from_numpy(arr)
 
+            # Apply transform if provided
             if self.transform:
                 tensor_img = self.transform(tensor_img)
 
