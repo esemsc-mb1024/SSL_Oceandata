@@ -56,7 +56,7 @@ class TransformerBlock(nn.Module):
 # ------------------------
 class VisionTransformer(nn.Module):
     def __init__(self, img_size=200, patch_size=20, in_chans=1,
-                 embed_dim=512, out_dim=256, depth=6, num_heads=8):
+                 embed_dim=512, out_dim=2048, depth=6, num_heads=8):
         super().__init__()
 
         self.patch_embed = PatchEmbedding(img_size, patch_size, in_chans, embed_dim)
@@ -71,51 +71,32 @@ class VisionTransformer(nn.Module):
         ])
         self.norm = nn.LayerNorm(embed_dim)
 
+        # projection head to prototypes (logits), no softmax here
+        # DINO-style projection head
         self.projector = nn.Sequential(
             nn.Linear(embed_dim, embed_dim),
             nn.GELU(),
-            nn.Linear(embed_dim, out_dim)
+            nn.Linear(embed_dim, embed_dim),
+            nn.GELU(),
+            # Last layer = prototypes with weight norm
+            nn.utils.weight_norm(nn.Linear(embed_dim, out_dim, bias=False))
         )
+        
+        # Freeze the weight_g parameter so all prototypes are on the unit sphere
+        self.projector[-1].weight_g.data.fill_(1)
+        self.projector[-1].weight_g.requires_grad = False
 
     def forward(self, x):
-        x = self.patch_embed(x)                # [B, N, D]
+        x = self.patch_embed(x)                  # [B, N, D]
         B = x.size(0)
-        cls_token = self.cls_token.expand(B, 1, -1)
-        x = torch.cat([cls_token, x], dim=1)   # [B, N+1, D]
+        cls = self.cls_token.expand(B, 1, -1)    # [B, 1, D]
+        x = torch.cat([cls, x], dim=1)           # [B, N+1, D]
         x = x + self.pos_embed[:, :x.size(1), :]
 
-        for block in self.blocks:
-            x = block(x)
+        for blk in self.blocks:
+            x = blk(x)
         x = self.norm(x)
 
-        patch_tokens = x[:, 1:, :]  # ignore cls token
-        return self.projector(patch_tokens)  
-
-
-        return total_loss
-
-# --------------------------
-# Collate helper function
-# --------------------------
-
-def dino_collate_fn(batch):
-    """
-    Collate multi-crops:
-    - batch: list of (crops, original) pairs
-    - returns:
-        stacked_views: list of [B, C, H, W] tensors
-        originals:     tensor [B, C, H, W]
-    """
-    crops_list = [item[0] for item in batch]
-    originals   = [item[1] for item in batch]
-
-    num_views = len(crops_list[0])
-    stacked_views = []
-
-    for i in range(num_views):
-        stacked = torch.stack([crops[i] for crops in crops_list], dim=0)
-        stacked_views.append(stacked)
-
-    stacked_originals = torch.stack(originals, dim=0)
-
-    return stacked_views, stacked_originals
+        cls_token = x[:, 0, :]                   # [B, D]
+        z = self.projector(cls_token)            # [B, out_dim] logits over prototypes
+        return z

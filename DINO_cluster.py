@@ -47,21 +47,19 @@ dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, collate_f
 # Feature extraction
 # ----------------------------
 all_features = []
-all_originals = []
+all_labels = []
+#all_paths = []
 
 with torch.no_grad():
-    for crops, originals in tqdm(dataloader, desc="Extracting features"):
-        originals = originals.to(device)
-        features = student(originals)  # [B, N, D]
-        all_features.append(features.cpu())
-        all_originals.append(originals.cpu())
+    for images, labels in dataloader:
+        images = images.to(device)
+        feats = student(images)  # or model(images) if no explicit encoder
+        all_features.append(feats.cpu())  # Still a tensor
+        all_labels.append(labels)         # Also tensors
+        #all_paths.extend(paths)           # List of strings
 
-all_features = torch.cat(all_features, dim=0)  # [B, N, D]
-all_originals = torch.cat(all_originals, dim=0)  # [B, 1, H, W]
-
-# Reduce patch tokens to mean vector
-features = all_features.mean(dim=1).numpy()  # [B, D]
-originals = all_originals.mean(dim=1).numpy()  # [B, H, W]
+features = torch.cat(all_features).numpy()
+labels = torch.cat(all_labels).numpy()
 
 # ----------------------------
 # Dimensionality Reduction
@@ -74,7 +72,7 @@ def reduce_dimensionality(features, n_pca=50):
 reduced_features = reduce_dimensionality(features, n_pca=pca_dim)
 
 # ----------------------------
-# Clustering (KMeans only)
+# Clustering KMeans only
 # ----------------------------
 def cluster_features_cosine(features, num_clusters):
     normed_features = normalize(features, norm="l2", axis=1)
