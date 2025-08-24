@@ -8,10 +8,10 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from datasets import in_memory_contrastive_dataset
-from models.simclr import simclr, simple_cnn
-from transforms.transforms import contrastive_transforms
-from losses import nt_xent_loss
+from ssl.datasets import in_memory_contrastive_dataset
+from ssl.models.simclr import simclr, simple_cnn
+from ssl.transforms.transforms import contrastive_transforms
+from ssl.losses import nt_xent_loss
 
 # ---------- configuration ----------
 epochs = 50
