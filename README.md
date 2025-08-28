@@ -1,8 +1,15 @@
-# Self-Supervised Learning on Sentinel-1 WV Data
-
+## Self-Supervised Learning on Sentinel-1 WV Data
 This repository contains code for training and evaluating self-supervised learning (SSL) models (SimCLR and DINO) on Sentinel-1 Wave Mode (WV) Synthetic Aperture Radar (SAR) imagery.
 
----
+### Overview
+
+## This project implements self-supervised learning techniques for processing and analyzing Sentinel-1 WV SAR imagery. The framework includes:
+
+Data downloading and preprocessing pipelines
+SSL model training (SimCLR and DINO)
+Transfer learning evaluation on labeled datasets
+Baseline comparisons with classical methods
+Clustering analysis for feature exploration
 
 ## Data Download
 
@@ -16,10 +23,10 @@ To access the data:
 
 2. **Set up your credentials**  
    Store your login in a `.netrc` file in your home directory:
-   ```bash
-   machine urs.earthdata.nasa.gov
+   
+   'machine urs.earthdata.nasa.gov
    login YOURUSERNAME
-   password YOURPASSWORD
+   password YOURPASSWORD'
 
 3. **Install ASF Python client**
    ```bash
