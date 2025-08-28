@@ -22,12 +22,13 @@ To access the data:
    password YOURPASSWORD
 
 3. **Install ASF Python client**
+   ```bash
    pip install asf_search
 
    **Example Query**
-
+   ```bash
    import asf_search as asf
-
+   ```bash
    results = asf.search(
     platform="Sentinel-1",
     processingLevel="SLC",
@@ -36,7 +37,7 @@ To access the data:
     end="2019-01-31T23:59:59Z",
     intersectsWith="POLYGON((-74.7 33.7, -72.6 29.6, -59.5 31.0, -57.4 42.2, -65.9 42.7, -74.7 33.7))"
 )
-
+   ```bash
    print(f"Found {len(results)} scenes")
 
 
