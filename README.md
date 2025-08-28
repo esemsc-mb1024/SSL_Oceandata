@@ -37,10 +37,10 @@
          intersectsWith="POLYGON((-74.7 33.7, -72.6 29.6, -59.5 31.0, -57.4 42.2, -65.9 42.7, -74.7 33.7))"
      )
 
-     print(f"Found {len(results)} scenes")
+    
      ```
 
-  *Note*: An internal Python script (not included) was provided to download WV data. The process is slow and memory-intensive — expect ~50–100 images/hour.
+  *Note*: An internal Python script (not included) was provided by ESTEC to download WV data. The process is slow and memory-intensive — expect ~50–100 images/hour.
 
   ---
 
@@ -101,7 +101,8 @@
   Run k-means clustering analysis for the SimCLR model:
   ```bash
   python src/sslearn/clustering/cluster_run.py
-
+  ```
+  *(Ensure SSL models have been trained first; no pretrained weights are included.)*
 
 
 
