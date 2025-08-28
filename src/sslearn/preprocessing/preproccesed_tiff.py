@@ -2,6 +2,14 @@ import os
 from PIL import Image, ImageOps
 from pathlib import Path
 
+"""
+GeoTIFF Preprocessing Script
+============================
+
+This script preprocesses a labelled GeoTIFF dataset for downstream 
+machine learning tasks (e.g., SSL transfer learning).
+"""
+
 # Directories
 # Path to labelled GeoTIFF dataset (input images)
 input_dir = Path('/path/to/GeoTIFF/')

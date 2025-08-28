@@ -3,6 +3,15 @@ import torch
 from torch.utils.data import Dataset
 import numpy as np
 
+"""
+Custom In-Memory Datasets for Self-Supervised Learning
+======================================================
+
+This module defines dataset wrappers for training self-supervised models 
+(SimCLR and DINO) on Sentinel-1 WV sigma⁰ imagery stored in memory 
+as NumPy arrays.
+
+"""
 
 class InMemoryContrastiveDataset(Dataset):
     def __init__(self, array_stack, transform=None, return_index=False):

@@ -20,6 +20,23 @@ from sslearn.transforms.transforms import LightContrastiveAug, ModerateContrasti
 # loss 
 from sslearn.loss_fn import nt_xent_loss
 
+"""
+SimCLR Training Script for Sentinel-1 WV Sigma⁰
+===============================================
+
+This script trains a SimCLR model (SimpleCNN encoder + 2-layer projector)
+on preprocessed Sentinel-1 Wave Mode (WV) sigma⁰ patches using NT-Xent loss.
+
+Workflow
+--------
+1) Load preprocessed numpy stack (shape: [N, C, H, W]) from `data_path`.
+2) Wrap data with `InMemoryContrastiveDataset`, which returns two augmented
+   views per sample (light/moderate/heavy policies available).
+3) Forward each view through the SimCLR model to obtain projections (z_i, z_j).
+4) Optimize NT-Xent contrastive loss over paired views.
+5) Log average loss per epoch; return `loss_history`
+"""
+
 # ---------- configuration ----------
 epochs = 50
 batch_size = 128

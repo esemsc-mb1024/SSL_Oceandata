@@ -4,8 +4,21 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, f1_score, confusion_matrix
 import numpy as np
 import matplotlib.pyplot as plt
-  
+
+
 def train_logistic_regression(features, labels):
+    """
+    Train and evaluate a multinomial logistic regression classifier.
+
+    Args:
+        features (ndarray): Input features of shape [N, D].
+        labels (ndarray): Class labels of shape [N].
+
+    Returns:
+        clf (LogisticRegression): Trained logistic regression model.
+        scaler (StandardScaler): Scaler fitted on training data.
+        test_data (tuple): (X_test, y_test, y_pred) for evaluation and confusion matrix.
+    """
 
     X_train, X_test, y_train, y_test = train_test_split(
         features, labels, test_size=0.2, random_state=42, stratify=labels

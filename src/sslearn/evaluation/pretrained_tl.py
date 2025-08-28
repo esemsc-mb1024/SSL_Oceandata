@@ -9,6 +9,14 @@ from sklearn.metrics import accuracy_score, classification_report
 
 from sslearn.preprocessing.tiff_ds import TiffDataset
 
+"""
+Transfer Learning with Pretrained ResNet18
+------------------------------------------
+
+This script evaluates ImageNet-pretrained ResNet18 features on the
+Sentinel-1 WV GeoTIFF dataset using a linear logistic regression probe
+"""
+
  # --- Data ---
 dataset = TiffDataset("Path/to/processed/GeoTIFF/")
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)

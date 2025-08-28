@@ -3,6 +3,15 @@ import numpy as np
 from netCDF4 import Dataset
 from tqdm import tqdm
 
+"""
+NetCDF to NumPy Conversion for Sentinel-1 Sigma0
+================================================
+
+This script extracts sigma⁰ backscatter arrays from Sentinel-1 WV NetCDF (.nc) 
+files and saves them as `.npy` arrays for downstream preprocessing and training
+
+"""
+
 base_dir = "/Path/to/sentinel_data/"
 output_dir = "/Path/to/Sigma0_WV/"
 os.makedirs(output_dir, exist_ok=True)

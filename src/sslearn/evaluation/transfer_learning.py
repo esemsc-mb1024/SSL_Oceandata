@@ -10,6 +10,22 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 from sslearn.classical.logistic_regression import train_logistic_regression, plot_confusion_matrix,  label_efficiency_curve
 
+"""
+Linear Probe on SimCLR Features
+-------------------------------
+
+This script evaluates a SimCLR model trained on Sentinel-1 WV data by:
+
+1. Loading a SimCLR encoder (checkpoint optional).
+2. Extracting features from GeoTIFF images.
+3. Training and evaluating a logistic regression probe.
+4. Plotting confusion matrices.
+5. Plotting a label-efficiency curve.
+
+Purpose:
+- Assess representation quality of SimCLR features for classification tasks.
+"""
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ----------------------------

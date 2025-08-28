@@ -2,6 +2,14 @@ import random
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 
+"""
+Augmentation Transforms for SAR WV Self-Supervised Learning
+===========================================================
+
+This module defines torchvision-based data augmentation pipelines for
+grayscale Sentinel-1 Wave Mode (WV) images used in contrastive SSL (SimCLR)
+and self-distillation (DINO).
+"""
 
 class LightContrastiveAug:
     """

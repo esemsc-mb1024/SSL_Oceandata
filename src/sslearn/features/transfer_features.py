@@ -1,6 +1,10 @@
 import torch
 
 def extract_features_Sim(model, dataloader, device):
+    """
+    Feature extrature for SimCLR
+    Returns 512 feature embeddings for each image
+    """
     model.eval()
     all_features = []
     all_labels = []

@@ -19,6 +19,24 @@ from sslearn.utils import get_teacher_momentum, update_teacher, dino_collate_fn
 # Transforms
 from sslearn.transforms.transforms import DinoMultiCropLight, DinoMultiCropStrong
 
+"""
+DINO Training Script (Vision Transformer)
+=========================================
+
+This script trains a Vision Transformer (ViT) using the DINO self-supervised 
+learning framework on Sentinel-1 WV sigma⁰ imagery.
+
+Pipeline
+--------
+1. Load preprocessed `.npy` sigma⁰ arrays from disk.
+2. Apply multi-crop augmentations (global + local views).
+3. Initialize student and teacher Vision Transformers with identical weights.
+4. Train the student model using the DINO loss:
+   - Student learns to predict teacher distributions.
+   - Teacher parameters updated with exponential moving average (EMA).
+5. Log average training loss per epoch.
+"""
+
 # ----------------------------
 # Configuration
 # ----------------------------
@@ -86,9 +104,3 @@ for epoch in range(num_epochs):
 
 
 
-
-# ----------------------------
-# Entry Point
-# ----------------------------
-if __name__ == "__main__":
-    main()

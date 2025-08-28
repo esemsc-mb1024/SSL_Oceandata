@@ -2,6 +2,20 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+"""
+SimpleCNN + SimCLR Implementation
+---------------------------------
+
+This module defines:
+- SimpleCNN: a small convolutional backbone for feature extraction from 
+  grayscale images (e.g., Sentinel-1 SAR WV).
+- SimCLR: a contrastive learning framework that combines an encoder with 
+  a projection head mapping to a latent space for contrastive loss.
+
+- Inspired by SimCLR: Chen, T., Kornblith, S., Norouzi, M., & Hinton, G. (2020).
+  "A Simple Framework for Contrastive Learning of Visual Representations."
+- Assisted by AI for creation
+"""
 
 class SimpleCNN(nn.Module):
     """

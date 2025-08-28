@@ -1,6 +1,17 @@
 import torch
 import torch.nn as nn
+"""
+Vision Transformer with DINO-style Projection Head
+--------------------------------------------------
 
+This module implements a simplified Vision Transformer (ViT) architecture
+for self-supervised learning on image patches. It follows the DINO framework 
+(Caron et al., 2021) where features from the CLS token are projected into a 
+prototype space for contrastive/self-distillation training.
+
+AI assisted in the creation of this model
+
+"""
 # ------------------------
 # Patch Embedding
 # ------------------------

@@ -6,6 +6,15 @@ from tqdm import tqdm
 # import your preprocessing utils
 from sslearn.preprocessing.preprocessing import nearest_neighbor_fill, pad_to_200
 
+"""
+Sigma0 WV Postprocessing Script
+===============================
+
+This script postprocesses raw Sentinel-1 WV sigma⁰ `.npy` arrays to prepare them 
+for training self-supervised learning (SSL) models.
+"""
+
+
 # ----------------------------
 # Config
 # ----------------------------

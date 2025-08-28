@@ -9,6 +9,15 @@ from sklearn.metrics import accuracy_score, classification_report
 from sslearn.preprocessing.tiff_ds import TiffDataset
 
 
+"""
+Baseline Logistic Regression (Raw Pixels, No SSL)
+-------------------------------------------------
+This script trains a simple logistic regression model on raw pixel values
+from Sentinel-1 WV GeoTIFFs. It serves as a lower-bound benchmark
+compared to SSL-based models.
+"""
+
+
 # Load dataset
 dataset = TiffDataset("Path/to/processed/GeoTIFF/")
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)

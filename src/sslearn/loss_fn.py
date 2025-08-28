@@ -2,6 +2,34 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+"""
+Loss Functions for Self-Supervised Learning
+===========================================
+
+This module implements two loss functions commonly used in self-supervised 
+representation learning for vision models.
+
+Functions / Classes
+-------------------
+nt_xent_loss(z_i, z_j, temperature=0.5):
+    - Normalized Temperature-scaled Cross Entropy Loss (NT-Xent) from SimCLR.
+    - Encourages representations of two augmented views of the same image to 
+      be close, while pushing apart views from different images.
+    - Reference: Chen et al. (2020), 
+      "A Simple Framework for Contrastive Learning of Visual Representations."
+
+DinoLoss(out_dim=2048, student_temp=0.1, teacher_temp=0.04, center_momentum=0.9):
+    - Loss function for DINO (self-distillation with no labels).
+    - Computes cross-entropy between teacher and student distributions 
+      across multiple augmented views.
+    - Teacher outputs are centered, temperature-scaled, and stop-grad applied.
+    - Student outputs are softened with a higher temperature.
+    - Maintains an exponential moving average (EMA) "center" to stabilize training.
+    - Reference: Caron et al. (2021), 
+      "Emerging Properties in Self-Supervised Vision Transformers."
+
+      AI assisted with the creation of loss fucntions
+"""
 # ---------------------------------------------
 # SimCLR NT-Xent Loss
 # ---------------------------------------------

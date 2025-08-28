@@ -4,6 +4,14 @@ import torch
 from torch.utils.data import Dataset
 from PIL import Image
 
+"""
+TiffDataset for Labelled GeoTIFF Images
+=======================================
+
+This module defines a PyTorch `Dataset` for loading and preprocessing 
+labelled GeoTIFF imagery (e.g., Sentinel-1 WV images).
+"""
+
 class TiffDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.samples = []

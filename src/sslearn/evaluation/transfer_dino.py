@@ -1,6 +1,15 @@
 import torch
 from torch.utils.data import DataLoader
 
+"""
+Linear Probe on DINO Features
+-----------------------------
+
+This script evaluates a Vision Transformer (DINO student) trained on
+Sentinel-1 WV data by extracting CLS embeddings and training a
+logistic regression probe.
+"""
+
 # Model
 from models.dino_arc import VisionTransformer
 
