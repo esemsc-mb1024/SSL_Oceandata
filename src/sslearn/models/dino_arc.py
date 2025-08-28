@@ -1,7 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
 
 # ------------------------
 # Patch Embedding
@@ -10,15 +8,12 @@ class PatchEmbedding(nn.Module):
     def __init__(self, img_size=200, patch_size=20, in_chans=1, embed_dim=512):
         super().__init__()
         self.num_patches = (img_size // patch_size) ** 2
-
         self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size)
-        self.pos_embed = nn.Parameter(torch.zeros(1, self.num_patches, embed_dim))
-        nn.init.trunc_normal_(self.pos_embed, std=0.02)
+        
 
     def forward(self, x):
         x = self.proj(x)               # [B, D, H', W']
         x = x.flatten(2).transpose(1, 2)  # [B, N, D]
-        x = x + self.pos_embed
         return x
 
 
@@ -86,7 +81,7 @@ class VisionTransformer(nn.Module):
         self.projector[-1].weight_g.data.fill_(1)
         self.projector[-1].weight_g.requires_grad = False
 
-    def forward(self, x):
+    def forward(self, x, return_features=False):
         x = self.patch_embed(x)                  # [B, N, D]
         B = x.size(0)
         cls = self.cls_token.expand(B, 1, -1)    # [B, 1, D]
@@ -97,6 +92,10 @@ class VisionTransformer(nn.Module):
             x = blk(x)
         x = self.norm(x)
 
-        cls_token = x[:, 0, :]                   # [B, D]
-        z = self.projector(cls_token)            # [B, out_dim] logits over prototypes
+        cls_token = x[:, 0, :]  # [B, D]
+        if return_features:
+            return cls_token  # embeddings for transfer learning
+
+        z = self.projector(cls_token)  # logits for DINO training
         return z
+

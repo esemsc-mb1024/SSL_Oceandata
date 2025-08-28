@@ -3,8 +3,10 @@ from PIL import Image, ImageOps
 from pathlib import Path
 
 # Directories
-input_dir = Path('/rds/general/user/mb1024/home/GeoTIFF/')
-output_dir = Path('/rds/general/user/mb1024/home/SA/TIFF_processed_2/')
+# Path to labelled GeoTIFF dataset (input images)
+input_dir = Path('/path/to/GeoTIFF/')
+# Path to store processed dataset
+output_dir = Path('/path/to/store/TIFF_processed/') 
 output_dir.mkdir(parents=True, exist_ok=True)
 
 target_width = 200

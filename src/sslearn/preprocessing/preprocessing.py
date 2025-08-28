@@ -2,19 +2,37 @@ import numpy as np
 from scipy import ndimage
 from scipy.spatial import cKDTree
 
-def pad_to_max_with_mean(arr, target_height=204, target_width=216):
-    """Pad a 2D array to target dimensions using the mean value of the array."""
-    h, w = arr.shape
-    pad_value = np.mean(arr)
-    
-    padded = np.full((target_height, target_width), pad_value, dtype=arr.dtype)
-    
-    y_offset = (target_height - h) // 2
-    x_offset = (target_width - w) // 2
-    
-    padded[y_offset:y_offset + h, x_offset:x_offset + w] = arr
-    
-    return padded
+def pad_to_200(array: np.ndarray) -> np.ndarray:
+    """
+    Pad a 2D numpy array (grayscale image) to (200,200) 
+    only if it's smaller. Uses mean pixel value as fill.
+
+    Args:
+        array (np.ndarray): 2D array, shape (H, W).
+
+    Returns:
+        np.ndarray: Array padded to at least (200,200).
+    """
+    target_h, target_w = 200, 200
+    h, w = array.shape
+
+    # If already big enough, return unchanged
+    if h >= target_h and w >= target_w:
+        return array
+
+    pad_h = max(target_h - h, 0)
+    pad_w = max(target_w - w, 0)
+
+    if pad_h > 0 or pad_w > 0:
+        padding = (
+            (pad_h // 2, pad_h - pad_h // 2),  # (top, bottom)
+            (pad_w // 2, pad_w - pad_w // 2),  # (left, right)
+        )
+        mean_val = int(array.mean())
+        array = np.pad(array, padding, mode="constant", constant_values=mean_val)
+
+    return array
+
 
 def nearest_neighbor_fill(arr):
     """Fill NaN values in a 2D array using the nearest neighbor interpolation."""
@@ -36,21 +54,6 @@ def nearest_neighbor_fill(arr):
 
     return filled_arr
 
-def crop_sigma_arrays(sigma0_arrays, target_height=204, target_width=216):
-    cropped_sigma_arrays = []
-    for arr in sigma0_arrays:
-        h, w = arr.shape
-        cropped = arr[:target_height, :target_width]  # crop both height and width
-        cropped_sigma_arrays.append(cropped)
-    return cropped_sigma_arrays
 
-def crop_numpy(img_array, crop_size=200):
-    c, h, w = img_array.shape
-    start_y = (h - crop_size) // 2
-    start_x = (w - crop_size) // 2
-    cropped = img_array[ : , start_y:start_y+crop_size, start_x:start_x+crop_size]
-    return cropped
 
-# Example of loading a memmap stack (readonly)
-def load_memmap_stack(path="clean_combined_stack.dat", shape=(49402, 204, 216), dtype=np.float32):
-    return np.memmap(path, dtype=dtype, mode='r', shape=shape)
+

@@ -83,34 +83,4 @@ class SimCLR(nn.Module):
         return z
 
 
-def nt_xent_loss(z_i, z_j, temperature=0.5):
-    """
-    Normalized Temperature-scaled Cross Entropy Loss (NT-Xent) for SimCLR.
-    
-    Args:
-        z_i: Tensor of shape [B, D] — embeddings from view 1
-        z_j: Tensor of shape [B, D] — embeddings from view 2
-        temperature: Scaling factor for similarity
-        
-    Returns:
-        Scalar loss
-    """
-    batch_size = z_i.size(0)
-    z = torch.cat([z_i, z_j], dim=0)         # [2B, D]
-    z = F.normalize(z, dim=1)                # Unit norm
 
-    # Cosine similarity matrix
-    sim = torch.matmul(z, z.T) / temperature # [2B, 2B]
-
-    # Remove similarity to self
-    mask = torch.eye(2 * batch_size, device=z.device, dtype=torch.bool)
-    sim.masked_fill_(mask, float('-inf'))
-
-    # Positive pairs: i <-> i + B
-    labels = torch.cat([
-        torch.arange(batch_size, device=z.device) + batch_size,
-        torch.arange(batch_size, device=z.device)
-    ])
-
-    loss = F.cross_entropy(sim, labels)
-    return loss

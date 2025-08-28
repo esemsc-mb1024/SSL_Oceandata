@@ -6,11 +6,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
 
-from datasets.tiff_dataset import TiffDataset
+from sslearn.preprocessing.tiff_ds import TiffDataset
 
 
 # Load dataset
-dataset = TiffDataset("data/TIFF_processed_1/GeoTIFF/")
+dataset = TiffDataset("Path/to/processed/GeoTIFF/")
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
 
@@ -48,5 +48,5 @@ clf.fit(X_train_scaled, y_train)
 # Evaluate
 y_pred = clf.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_pred)
-print(f"📉 Baseline (raw pixels, no SSL) Accuracy: {acc:.4f}")
+print(f"Baseline (raw pixels, no SSL) Accuracy: {acc:.4f}")
 print(classification_report(y_test, y_pred))

@@ -1,45 +1,33 @@
+import math
 import torch
 import torch.nn as nn
 
-
+@torch.no_grad()
 def update_teacher(student: nn.Module, teacher: nn.Module, momentum: float = 0.996):
-    """
-    Update teacher weights as EMA of student weights.
-    teacher = m * teacher + (1 - m) * student
-    """
-    with torch.no_grad():
-        for param_q, param_k in zip(student.parameters(), teacher.parameters()):
-            param_k.data = momentum * param_k.data + (1.0 - momentum) * param_q.data
+    """EMA update: teacher = m*teacher + (1-m)*student."""
+    for q, k in zip(student.parameters(), teacher.parameters()):
+        k.mul_(momentum).add_(q, alpha=1.0 - momentum)
 
-
-def get_teacher_momentum(epoch: int, base_m=0.996, max_epochs=100):
+def get_teacher_momentum(progress: float, base_m: float = 0.996):
     """
-    Cosine schedule for teacher momentum.
+    Cosine schedule in [base_m, 1.0]. 
+    progress \in [0,1], e.g. (epoch + it/num_it)/num_epochs.
     """
-    return 1.0 - (1.0 - base_m) * (0.5 * (1. + torch.cos(torch.tensor(epoch / max_epochs * 3.1415926)))).item()
-
+    return 1.0 - (1.0 - base_m) * 0.5 * (1.0 + math.cos(math.pi * progress))
 
 def dino_collate_fn(batch):
     """
-    Collate function for DINO multi-crop input.
-
-    Args:
-        batch: List of tuples (crops, original) from dataset
-
-    Returns:
-        stacked_views: list of [B, C, H, W] tensors for each crop view
-        originals:     tensor of [B, C, H, W]
+    batch: list of (views, original)
+      - views: list[Tensor] per sample (e.g., 2 global + n local)
+      - original: Tensor [C,H,W]
+    returns:
+      - stacked_views: list[Tensor] shape [B,C,H_i,W_i] per view index
+      - originals: Tensor [B,C,H,W]
     """
-    crops_list = [item[0] for item in batch]
-    originals = [item[1] for item in batch]
+    views_list = [b[0] for b in batch]
+    originals = torch.stack([b[1] for b in batch], dim=0)
 
-    num_views = len(crops_list[0])
-    stacked_views = []
+    n_views = len(views_list[0])
+    stacked_views = [torch.stack([v[i] for v in views_list], dim=0) for i in range(n_views)]
+    return stacked_views, originals
 
-    for i in range(num_views):
-        stacked = torch.stack([crops[i] for crops in crops_list], dim=0)
-        stacked_views.append(stacked)
-
-    stacked_originals = torch.stack(originals, dim=0)
-
-    return stacked_views, stacked_originals

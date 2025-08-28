@@ -31,7 +31,7 @@ class TiffDataset(Dataset):
         with Image.open(path) as img:
             arr = np.array(img).astype(np.float32)
 
-            # Normalize image to [0, 1] if it's not already
+            # Normalize image to [0, 1] 
             arr = (arr - arr.min()) / (arr.max() - arr.min() + 1e-8)
 
             # Add channel dimension [1, H, W]
