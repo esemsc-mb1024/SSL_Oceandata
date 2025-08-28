@@ -1,92 +1,106 @@
-## Self-Supervised Learning on Sentinel-1 WV Data
-This repository contains code for training and evaluating self-supervised learning (SSL) models (SimCLR and DINO) on Sentinel-1 Wave Mode (WV) Synthetic Aperture Radar (SAR) imagery.
+|
+  # SAR Wave Mode Project
 
-### Overview
+  ## Data Sources
 
-## This project implements self-supervised learning techniques for processing and analyzing Sentinel-1 WV SAR imagery. The framework includes:
+  ### Unlabelled WV Data
+  The training data comes from **Sentinel-1 WV SLC products**, distributed by the [Alaska Satellite Facility (ASF) DAAC](https://asf.alaska.edu/).
 
-Data downloading and preprocessing pipelines
-SSL model training (SimCLR and DINO)
-Transfer learning evaluation on labeled datasets
-Baseline comparisons with classical methods
-Clustering analysis for feature exploration
+  #### Access Instructions
+  1. **Create an ASF Account**  
+     Sign up for free: [https://urs.earthdata.nasa.gov](https://urs.earthdata.nasa.gov)
 
-## Data Download
+  2. **Set up credentials**  
+     Save your login details in a `.netrc` file in your home directory:
 
-### Unlabelled WV Data
-The training data used in this project comes from **Sentinel-1 WV SLC products**, distributed by the [Alaska Satellite Facility (ASF) DAAC](https://asf.alaska.edu/).
+     ```bash
+     machine urs.earthdata.nasa.gov
+     login YOURUSERNAME
+     password YOURPASSWORD
+     ```
 
-To access the data:
+  3. **Install the ASF Python client**
+     ```bash
+     pip install asf_search
+     ```
 
-1. **Create an ASF Account**  
-   Sign up for a free account here: [https://urs.earthdata.nasa.gov](https://urs.earthdata.nasa.gov).
+  4. **Example query**
+     ```python
+     import asf_search as asf
 
-2. **Set up your credentials**  
-   Store your login in a `.netrc` file in your home directory:
-   
-   'machine urs.earthdata.nasa.gov
-   login YOURUSERNAME
-   password YOURPASSWORD'
+     results = asf.search(
+         platform="Sentinel-1",
+         processingLevel="SLC",
+         beamMode="WV",
+         start="2019-01-01T00:00:00Z",
+         end="2019-01-31T23:59:59Z",
+         intersectsWith="POLYGON((-74.7 33.7, -72.6 29.6, -59.5 31.0, -57.4 42.2, -65.9 42.7, -74.7 33.7))"
+     )
 
-3. **Install ASF Python client**
-   ```bash
-   pip install asf_search
+     print(f"Found {len(results)} scenes")
+     ```
 
-   **Example Query**
-   ```bash
-   import asf_search as asf
-   ```bash
-   results = asf.search(
-    platform="Sentinel-1",
-    processingLevel="SLC",
-    beamMode="WV",
-    start="2019-01-01T00:00:00Z",
-    end="2019-01-31T23:59:59Z",
-    intersectsWith="POLYGON((-74.7 33.7, -72.6 29.6, -59.5 31.0, -57.4 42.2, -65.9 42.7, -74.7 33.7))"
-)
-   ```bash
-   print(f"Found {len(results)} scenes")
+  *Note*: An internal Python script (not included) was provided to download WV data. The process is slow and memory-intensive — expect ~50–100 images/hour.
 
+  ---
 
-    Note: An internal Python script (not included here) was provided to download WV data. The process is relatively slow and memory intensive — around 50–100 images per hour.
+  ### Labelled Dataset
+  The manually annotated dataset used for transfer learning is **TenGeoP-SARwv**, available at:  
+   [https://www.seanoe.org/data/00456/56796/](https://www.seanoe.org/data/00456/56796/)  
 
+  - Contains **37,000+ images** across **10 geophysical classes**.  
+  - For this project, a **subset of 1,000 images** was used for transfer learning.
 
-### Labelled Dataset
-The manually annotated dataset used for transfer learning is TenGeoP-SARwv, available at:
-https://www.seanoe.org/data/00456/56796/
-Contains 37,000+ images across 10 geophysical classes.
-For this project, a subset of 1,000 images was used for transfer learning.
+  ---
 
-Model Training
-Extract raw sigma⁰ backscatter images from the downloaded data:
-python src/sslearn/preprocessing/sigma0.py
-(Update the paths inside the script to point to your local data.)
+  ## Model Training
 
-Preprocess the data for training:
-python src/sslearn/preprocessing/preprocessing_run.py
+  1. **Extract raw sigma⁰ backscatter images**
+     ```bash
+     python src/sslearn/preprocessing/sigma0.py
+     ```
+     *(Update the paths in the script to point to your local data.)*
 
-Train SSL models:
-python src/sslearn/training/training_simclr.py
-python src/sslearn/training/training_dino.py
+  2. **Preprocess data for training**
+     ```bash
+     python src/sslearn/preprocessing/preprocessing_run.py
+     ```
 
+  3. **Train SSL models**
+     ```bash
+     python src/sslearn/training/training_simclr.py
+     python src/sslearn/training/training_dino.py
+     ```
 
-Transfer Learning
-Preprocess the labelled dataset:
-python src/sslearn/preprocessing/preprocessed_tiff.py
+  ---
 
-Run transfer learning:
-python src/sslearn/evaluation/transfer_dino.py
-python src/sslearn/evaluation/transfer_simclr.py
+  ##  Transfer Learning
 
-Baseline comparisons:
-python src/sslearn/evaluation/pretrained_tl.py
-python src/sslearn/classical/baseline_lr.py
-(Ensure models have been trained first, as no pretrained weights are included in this repository.)
+  1. **Preprocess the labelled dataset**
+     ```bash
+     python src/sslearn/preprocessing/preprocessed_tiff.py
+     ```
 
-Clustering
-To run k-means clustering analysis for the SimCLR model:
-python src/sslearn/clustering/cluster_run.py
-(Ensure models have been trained first, as no pretrained weights are included in this repository.)
+  2. **Run transfer learning**
+     ```bash
+     python src/sslearn/evaluation/transfer_dino.py
+     python src/sslearn/evaluation/transfer_simclr.py
+     ```
+
+  3. **Baseline comparisons**
+     ```bash
+     python src/sslearn/evaluation/pretrained_tl.py
+     python src/sslearn/classical/baseline_lr.py
+     ```
+     *(Ensure SSL models have been trained first; no pretrained weights are included.)*
+
+  ---
+
+  ## Clustering
+
+  Run k-means clustering analysis for the SimCLR model:
+  ```bash
+  python src/sslearn/clustering/cluster_run.py
 
 
 
